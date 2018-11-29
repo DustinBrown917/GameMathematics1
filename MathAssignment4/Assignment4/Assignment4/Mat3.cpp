@@ -15,8 +15,7 @@ Mat3::Mat3() {
 }
 
 //Unit constructor.
-Mat3::Mat3(float unit)
-{
+Mat3::Mat3(float unit) {
 	m[0] = m[1] = m[2] = m[3] = m[4] = m[5] = m[6] = m[7] = m[8] = unit;
 }
 
@@ -84,8 +83,27 @@ float Mat3::Det() const
 			(  m[2] * ((m[3] * m[7]) - (m[4] * m[6])));
 }
 
-void Mat3::Inverse()
+const Mat3 Mat3::Inverse(const Mat3& m)
 {
+	float determinate = m.Det();
+
+	//If the determinate is very small or 0, it could cause problems. This catches that error.
+	if (abs(determinate) < TINY_FLOAT) { throw "Determinate of this matrix is too small to invert."; }
+
+	float inverseDeterminate = 1.0f / determinate;
+
+	Mat3 invertedMat; // inverse of matrix m
+	invertedMat[0] = (m[4] * m[8] - m[7] * m[5]) * inverseDeterminate;
+	invertedMat[1] = (m[2] * m[7] - m[1] * m[8]) * inverseDeterminate;
+	invertedMat[2] = (m[1] * m[5] - m[2] * m[4]) * inverseDeterminate;
+	invertedMat[3] = (m[5] * m[6] - m[3] * m[8]) * inverseDeterminate;
+	invertedMat[4] = (m[0] * m[8] - m[2] * m[6]) * inverseDeterminate;
+	invertedMat[5] = (m[3] * m[2] - m[0] * m[5]) * inverseDeterminate;
+	invertedMat[6] = (m[3] * m[7] - m[6] * m[4]) * inverseDeterminate;
+	invertedMat[7] = (m[6] * m[1] - m[0] * m[7]) * inverseDeterminate;
+	invertedMat[8] = (m[0] * m[4] - m[3] * m[1]) * inverseDeterminate;
+
+	return invertedMat;
 }
 
 //Print the matrix to console in a... somewhat nice way.

@@ -5,6 +5,10 @@
 #define DEGREE_TO_RADIAN 0.01745329251f;
 #endif
 
+#ifndef TINY_FLOAT
+#define TINY_FLOAT 1.0e-7f
+#endif
+
 #include "Vector.h"
 
 class Mat3 {
@@ -52,13 +56,14 @@ public:
 		return *this;
 	}
 
+	//Multiply this matrix by a Vec3.
 	inline const Vec3 operator * (const Vec3& vec) const {
 		Vec3 result = Vec3(0);
-		for (int i = 0; i < 3; i++) {
-			result.x += (m[i + 0] * vec.x);
-			result.y += (m[i + 1] * vec.y);
-			result.z += (m[i + 2] * vec.z);
-		}
+
+		result.x = (m[0] * vec.x) + (m[1] * vec.y) + (m[2] * vec.z);
+		result.y = (m[3] * vec.x) + (m[4] * vec.y) + (m[5] * vec.z);
+		result.z = (m[6] * vec.x) + (m[7] * vec.y) + (m[8] * vec.z);
+		return result;
 	}
 
 public:
@@ -78,7 +83,7 @@ public:
 	//Get the determinant of the matrix.
 	float Det() const;
 	//Invert the matrix
-	void Inverse();
+	static const Mat3 Inverse(const Mat3& m);
 
 	//Print the matrix to console.
 	void print() const;
