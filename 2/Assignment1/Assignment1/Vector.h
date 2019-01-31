@@ -280,8 +280,17 @@ struct Vec3 {
 
 #pragma region Vec4
 struct Vec4 {
+
+	struct Axis {
+		static const Vec4 x;
+		static const Vec4 y;
+		static const Vec4 z;
+		static const Vec4 w;
+	};
+
 	float x, y, z, w;
 
+	//Utility to help setting speeds
 	inline void Set(float x_, float y_, float z_, float w_) {
 		x = x_;
 		y = y_;
@@ -289,34 +298,57 @@ struct Vec4 {
 		w = w_;
 	}
 
+	//4 argument constructor
 	inline Vec4(float x_, float y_, float z_, float w_) {
 		Set(x_, y_, z_, w_);
 	}
 
+	//One argument constructor
 	inline Vec4(float s) : Vec4(s, s, s, s) { }
 
-	inline Vec4() : Vec4(1.0f) {}
+	//Zero argument constructor
+	inline Vec4() : Vec4(0.0f, 0.0f, 0.0f, 1.0f) {}
 
-	inline const Vec4 operator / (const float f) const {
-		return Vec4(x / f, y / f, z / f, w/f);
+	//Destructor stub
+	inline ~Vec4() {}
+
+	//Assignment operator
+	inline Vec4& operator = (const Vec4& vec) {
+		x = vec.x;
+		y = vec.y;
+		z = vec.z;
+		w = vec.w;
+
+		return *this;
 	}
 
+	//Devision operator
+	inline const Vec4 operator / (const float f) const {
+		return Vec4(x / f, y / f, z / f, w / f);
+	}
+
+	//Get the magnitude of the vector.
 	float Mag() {
 		return sqrt((x*x) + (y*y) + (z*z) + (w*w));
 	}
 
+	//Normalize this vector
 	void Normalize() {
 		*this = *this / Mag();
 	}
 
+	//Get the normal of the vector.
 	inline const Vec4 GetNormal() {
 		return *this / Mag();
 	}
 
+	//Get the dot of two Vec4's
 	inline static float Dot(const Vec4& v1, const Vec4& v2) {
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
 	}
 
+	//To string utility method.
+	std::string ToString() const;
 };
 
 #pragma endregion
