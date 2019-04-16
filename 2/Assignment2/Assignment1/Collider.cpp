@@ -11,6 +11,8 @@ bool Collider::RaySphereCollisionDetected(const Ray & ray, const Sphere & sphere
 
 bool Collider::RayAABCollisionDetected(const Ray & ray, const AxisAlignedBox & box)
 {
+	//Check for possible face collisions using cascading if statements. 
+	//Return without progression if collision is found.
 	if (ray.dir.x != 0) {
 		if(ray.dir.x > 0){
 			//Test x=0
@@ -101,7 +103,7 @@ Vec3 Collider::RaySphereCollisionPoint(const Ray & ray, const Sphere & sphere)
 	float c = Vec3::Dot(ray.start, ray.start) - (sphere.radius * sphere.radius);
 	float d = Descriminant(ray, sphere);
 
-	if (d < 0) { return Vec3(); } //No collision
+	if (d < 0) { return Vec3(); } //No collision, handle error
 
 	float t1 = (-b + sqrt(d)) / (2 * a);
 	float t2 = (-b - sqrt(d)) / (2 * a);
@@ -112,12 +114,17 @@ Vec3 Collider::RaySphereCollisionPoint(const Ray & ray, const Sphere & sphere)
 		if (t1 < t2) { return ray.currentPosition(t1); }
 		else { return ray.currentPosition(t2); }
 	}
-
+	printf("No collision detected");
 	return Vec3();
 }
 
 Vec3 Collider::RayAABCollisionPoint(const Ray & ray, const AxisAlignedBox & box)
 {
+	//Check for possible face collisions using cascading if statements. 
+	//Return the point at which the collision was found.
+	//In instances where collisions occur in parallel with a plane, I return the point at the beginning of the ray.
+	//My reasoning is that in a game, if a distinguishable start point begins in a collided state, then that point is the point of collision.
+	//This is specifically because a ray HAS a start point. Were we dealing with infinite lines, it would be a different story.
 	if (ray.dir.x != 0) {
 		if (ray.dir.x > 0) {
 			//Test x=0
@@ -198,9 +205,12 @@ Vec3 Collider::RayAABCollisionPoint(const Ray & ray, const AxisAlignedBox & box)
 			}
 		}
 	}
+	printf("No collision detected");
 	return Vec3();
 }
 
+//Useful subroutine for grabbing the discriminant in a ray/sphere collision.
+//Useful for avoiding divide by zero cases.
 float Collider::Descriminant(const Ray & ray, const Sphere & sphere)
 {
 	float a = Vec3::Dot(ray.dir, ray.dir);
