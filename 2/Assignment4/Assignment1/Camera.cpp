@@ -44,7 +44,7 @@ void Camera::Update()
 	float radializedFov = 1.0f / tan(fovy* 0.5f * DEGREES_TO_RADIANS);
 	/// Don't forget, this looks row centric but it really is a column matrix - right-hand rule rules
 	projection = Matrix4(radializedFov / aspectRatio, 0.0f, 0.0f, 0.0f,
-		0.0f, r  adializedFov, 0.0f, 0.0f,
+		0.0f, radializedFov, 0.0f, 0.0f,
 		0.0f, 0.0f, (near + far) / (near - far), -1.0,
 		0.0, 0.0, (2.0f*near*far) / (near - far), 0.0);
 }

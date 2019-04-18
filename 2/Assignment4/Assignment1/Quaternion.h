@@ -14,23 +14,37 @@ public:
 
 	inline Quaternion() : Quaternion(0.0f,0.0f,0.0f,1.0f) {}
 	inline Quaternion(float x, float y, float z, float w) { q.x = x; q.y = y; q.z = z; q.w = w; }
-	Quaternion(MATH::Vec3 axis, float angleInDegrees);
+	inline Quaternion(MATH::Vec3 axis, float angleInDegrees) {
+		
+		//Convert angle to radians
+		angleInDegrees = angleInDegrees / 360.0f * M_PI * 2.0f;
+
+		q.w = cos(angleInDegrees*0.5f);
+
+		axis = axis * sin(angleInDegrees * 0.5f);
+
+		q.x = axis.x;
+		q.y = axis.y;
+		q.z = axis.z;
+
+	}
 	~Quaternion();
 
-	inline const Quaternion operator *( const Quaternion other){
-		MATH::Vec3 myV = MATH::Vec3(q.x, q.y, q.z);
-		MATH::Vec3 oV = MATH::Vec3(other.q.x, other.q.y, other.q.z);
-		MATH::Vec3 crossed(q.w * oV + other.q.w * myV + MATH::VMath::cross(myV, oV));
+	inline Quaternion operator *( const Quaternion other){
+		MATH::Vec3 v = MATH::Vec3(q.x, q.y, q.z);
+		MATH::Vec3 otherV = MATH::Vec3(other.q.x, other.q.y, other.q.z);
+		float w = q.w * other.q.w - MATH::VMath::dot(v, otherV);
 
+		MATH::Vec3 ijk = other.q*q.w + v * other.q.w + MATH::VMath::cross(v, otherV);
 
-		return Quaternion(crossed.x, crossed.y, crossed.z, q.w * other.q.w - MATH::VMath::dot(q, other.q));
+		return Quaternion(ijk.x, ijk.y, ijk.z , w);
 	}
 
 	inline const float Mag() const {
 		return sqrt((q.x * q.x) + (q.y * q.y) + (q.z *q.z) + (q.w * q.w));
 	}
 
-	inline const Quaternion Normal() const {
+	inline Quaternion Normal() const {
 		MATH::Vec4 n = q / Mag();
 		return Quaternion(n.x, n.y, n.z, n.w);
 	}
@@ -42,14 +56,19 @@ public:
 	}
 
 	inline void Invert() {
-		Quaternion q2 = Quaternion(q.x, q.y, q.z, q.w);
-		q2.Conjugate();
+		float mag = this->Mag();
 
-		
+		Conjugate();
+		q = q / mag;
+	}
+
+	inline void print() {
+		q.print();
 	}
 
 	MATH::Vec3 Rotate(MATH::Vec3);
-	MATH::Matrix3 ConvertToMatrix();
+	MATH::Matrix3 ConvertToMatrix3();
+	MATH::Matrix4 ConvertToMatrix4();
 	EulerAngles ConvertToEuler();
 };
 

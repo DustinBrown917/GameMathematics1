@@ -122,13 +122,10 @@
     <ClCompile Include="VMath.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="EulerAngles.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="MMath.h" />
-    <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="VMath.h" />
   </ItemGroup>
