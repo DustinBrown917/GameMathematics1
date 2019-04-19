@@ -4,6 +4,7 @@
 int main(int arg, char* argv[]) {
 
 	Camera cam = Camera();
+	
 
 	cam.print();
 

@@ -11,6 +11,7 @@ class Camera
 private:
 	Matrix4 projection;
 	Matrix4 view;
+	Matrix4 mvp; //Just a dummy matrix for the assignment. Would not be necessary when dealing with actual objects related to the camera.
 	Vec3 position;
 
 	float fovy;
